@@ -15,10 +15,10 @@ export class Fetcher {
   constructor(private fetch: Fetch) {}
 
   build() {
-    const { path } = this;
+    const { path, method } = this;
     if (!path) throw new Error("Path is not specified!");
 
-    return () => this.fetch(path);
+    return () => this.fetch(path, { method });
   }
 
   withPath(path: string): Fetcher {

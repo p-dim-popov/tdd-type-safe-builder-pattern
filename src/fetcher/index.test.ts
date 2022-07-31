@@ -6,7 +6,7 @@ import {
 import { Fetcher } from "/src/fetcher/index.ts";
 import { describe, it } from "https://deno.land/std@0.150.0/testing/bdd.ts";
 import {
-  assertSpyCallArg,
+  assertSpyCallArgs,
   spy,
 } from "https://deno.land/std@0.150.0/testing/mock.ts";
 
@@ -37,7 +37,7 @@ describe("withPath", function () {
 });
 
 describe("build", function () {
-  it("should return function calling fetch with correct path", () => {
+  it("should return function calling fetch with correct path and options", () => {
     const fetchSpy = getNoopFetchMock();
     const service = new Fetcher(fetchSpy)
         .withPath("/hello")
@@ -46,7 +46,7 @@ describe("build", function () {
     assertEquals(typeof service, "function");
     service();
 
-    assertSpyCallArg(fetchSpy, 0, 0, "/hello");
+    assertSpyCallArgs(fetchSpy, 0, 0, ["/hello", { method: "GET" }]);
   });
 
   describe("method should validate builder state before building service function", function () {
