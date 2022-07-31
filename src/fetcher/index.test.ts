@@ -1,37 +1,45 @@
 import {
-  assertEquals,
-  assertObjectMatch,
+    assertEquals,
+    assertObjectMatch,
 } from "https://deno.land/std@0.150.0/testing/asserts.ts";
-import { Fetcher } from "/src/fetcher/index.ts";
+import {Fetcher} from "/src/fetcher/index.ts";
 import it = Deno.test;
 import {
-  assertSpyCallArg,
-  spy,
+    assertSpyCallArg,
+    spy,
 } from "https://deno.land/std@0.150.0/testing/mock.ts";
 
 type Fetch = typeof fetch;
 
-const getNoopFetchMock = () => spy((() => {}) as unknown as Fetch);
+const getNoopFetchMock = () => spy((() => {
+}) as unknown as Fetch);
 
 it("should assign retrieved fetch and path to new object", function () {
-  const fetchSpy = getNoopFetchMock();
-  const fetcher = new Fetcher(fetchSpy, "/hello");
-  assertObjectMatch(fetcher, { fetch: fetchSpy, path: "/hello" });
+    const fetchSpy = getNoopFetchMock();
+    const fetcher = new Fetcher(fetchSpy, "/hello");
+    assertObjectMatch(fetcher, {fetch: fetchSpy, path: "/hello"});
 });
 
 it("should have build method, returning function calling fetch with initialized path", () => {
-  const fetchSpy = getNoopFetchMock();
-  const service = new Fetcher(fetchSpy, "/hello").build();
+    const fetchSpy = getNoopFetchMock();
+    const service = new Fetcher(fetchSpy, "/hello").build();
 
-  assertEquals(typeof service, "function");
-  service();
+    assertEquals(typeof service, "function");
+    service();
 
-  assertSpyCallArg(fetchSpy, 0, 0, "/hello");
+    assertSpyCallArg(fetchSpy, 0, 0, "/hello");
 });
 
 it('should have withPath method for modifying fetch path', function () {
-  const builder = new Fetcher(getNoopFetchMock(), "/hello")
-  builder.withPath("/world");
+    const builder = new Fetcher(getNoopFetchMock(), "/hello")
+    builder.withPath("/world");
 
-  assertEquals((builder as any).path, "/world")
+    assertEquals((builder as any).path, "/world")
+});
+
+it('withPath should return builder instance', function () {
+    const builder = new Fetcher(getNoopFetchMock(), "/hello")
+    const builderWithPath = builder.withPath("/world");
+
+    assertEquals(builder, builderWithPath)
 });
