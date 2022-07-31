@@ -1,1 +1,5 @@
-export class Fetcher {}
+export class Fetcher {
+    build() {
+        return () => {}
+    }
+}
