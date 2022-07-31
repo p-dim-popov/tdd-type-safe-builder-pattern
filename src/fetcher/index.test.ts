@@ -14,40 +14,46 @@ type Fetch = typeof fetch;
 
 const getNoopFetchMock = () => spy((() => {}) as unknown as Fetch);
 
-it("should assign retrieved fetch and path to new object", function () {
+it("should assign retrieved fetch and default values to new object", function () {
   const fetchSpy = getNoopFetchMock();
   const fetcher = new Fetcher(fetchSpy);
   assertObjectMatch(fetcher, { fetch: fetchSpy, path: undefined });
 });
 
-it("should have build method, returning function calling fetch with initialized path", () => {
-  const fetchSpy = getNoopFetchMock();
-  const service = new Fetcher(fetchSpy).withPath("/hello").build();
+describe("withPath", function () {
+  it("should modify path", function () {
+    const builder = new Fetcher(getNoopFetchMock());
+    builder.withPath("/world");
 
-  assertEquals(typeof service, "function");
-  service();
+    assertEquals((builder as any).path, "/world");
+  });
 
-  assertSpyCallArg(fetchSpy, 0, 0, "/hello");
+  it("should return builder instance", function () {
+    const builder = new Fetcher(getNoopFetchMock());
+    const builderWithPath = builder.withPath("/world");
+
+    assertEquals(builder, builderWithPath);
+  });
 });
 
-it("should have withPath method for modifying fetch path", function () {
-  const builder = new Fetcher(getNoopFetchMock());
-  builder.withPath("/world");
+describe("build", function () {
+  it("should return function calling fetch with correct path", () => {
+    const fetchSpy = getNoopFetchMock();
+    const service = new Fetcher(fetchSpy)
+        .withPath("/hello")
+        .build();
 
-  assertEquals((builder as any).path, "/world");
-});
+    assertEquals(typeof service, "function");
+    service();
 
-it("withPath should return builder instance", function () {
-  const builder = new Fetcher(getNoopFetchMock());
-  const builderWithPath = builder.withPath("/world");
+    assertSpyCallArg(fetchSpy, 0, 0, "/hello");
+  });
 
-  assertEquals(builder, builderWithPath);
-});
+  describe("method should validate builder state before building service function", function () {
+    it("should throw error when path is not specified", function () {
+      const makeService = () => new Fetcher(getNoopFetchMock()).build();
 
-describe("build method should validate builder state before building service function", function () {
-  it("should throw error when path is not specified", function () {
-    const makeService = () => new Fetcher(getNoopFetchMock()).build();
-
-    assertThrows(makeService, Error, "Path is not specified!");
+      assertThrows(makeService, Error, "Path is not specified!");
+    });
   });
 });
