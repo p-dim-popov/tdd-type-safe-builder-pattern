@@ -25,4 +25,8 @@ export class Fetcher {
     this.path = path;
     return this;
   }
+
+  withMethod(method: Method) {
+    this.method = method;
+  }
 }

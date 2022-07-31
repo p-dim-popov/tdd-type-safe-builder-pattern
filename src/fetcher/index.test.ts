@@ -3,7 +3,7 @@ import {
   assertObjectMatch,
   assertThrows,
 } from "https://deno.land/std@0.150.0/testing/asserts.ts";
-import { Fetcher } from "/src/fetcher/index.ts";
+import { Fetcher, Method } from "/src/fetcher/index.ts";
 import { describe, it } from "https://deno.land/std@0.150.0/testing/bdd.ts";
 import {
   assertSpyCallArgs,
@@ -17,7 +17,11 @@ const getNoopFetchMock = () => spy((() => {}) as unknown as Fetch);
 it("should assign retrieved fetch and default values to new object", function () {
   const fetchSpy = getNoopFetchMock();
   const fetcher = new Fetcher(fetchSpy);
-  assertObjectMatch(fetcher, { fetch: fetchSpy, path: undefined, method: "GET" });
+  assertObjectMatch(fetcher, {
+    fetch: fetchSpy,
+    path: undefined,
+    method: "GET",
+  });
 });
 
 describe("withPath", function () {
@@ -36,12 +40,29 @@ describe("withPath", function () {
   });
 });
 
+describe("withMethod", function () {
+  [
+    Method.GET,
+    Method.POST,
+    Method.PATCH,
+    Method.PUT,
+    Method.DELETE,
+  ].forEach((method) =>
+    it(`should set method: ${method}`, function () {
+      const builder = new Fetcher(getNoopFetchMock());
+      builder.withMethod(method);
+
+      assertEquals((builder as any).method, method);
+    })
+  );
+});
+
 describe("build", function () {
   it("should return function calling fetch with correct path and options", () => {
     const fetchSpy = getNoopFetchMock();
     const service = new Fetcher(fetchSpy)
-        .withPath("/hello")
-        .build();
+      .withPath("/hello")
+      .build();
 
     assertEquals(typeof service, "function");
     service();
