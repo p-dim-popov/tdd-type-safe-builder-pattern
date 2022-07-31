@@ -28,3 +28,10 @@ it("should have build method, returning function calling fetch with initialized 
 
   assertSpyCallArg(fetchSpy, 0, 0, "/hello");
 });
+
+it('should have withPath method for modifying fetch path', function () {
+  const builder = new Fetcher(getNoopFetchMock(), "/hello")
+  builder.withPath("/world");
+
+  assertEquals((builder as any).path, "/world")
+});

@@ -6,4 +6,8 @@ export class Fetcher {
     build() {
         return () => this.fetch(this.path);
     }
+
+    withPath(path: string) {
+        this.path = path;
+    }
 }
