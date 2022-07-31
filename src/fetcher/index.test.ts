@@ -17,7 +17,7 @@ const getNoopFetchMock = () => spy((() => {}) as unknown as Fetch);
 it("should assign retrieved fetch and default values to new object", function () {
   const fetchSpy = getNoopFetchMock();
   const fetcher = new Fetcher(fetchSpy);
-  assertObjectMatch(fetcher, { fetch: fetchSpy, path: undefined });
+  assertObjectMatch(fetcher, { fetch: fetchSpy, path: undefined, method: "GET" });
 });
 
 describe("withPath", function () {

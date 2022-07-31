@@ -1,7 +1,16 @@
 type Fetch = typeof fetch;
 
+export enum Method {
+  GET = "GET",
+  POST = "POST",
+  PATCH = "PATCH",
+  PUT = "PUT",
+  DELETE = "DELETE",
+}
+
 export class Fetcher {
   private path: string | undefined;
+  private method: Method = Method.GET;
 
   constructor(private fetch: Fetch) {}
 
