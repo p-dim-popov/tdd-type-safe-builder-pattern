@@ -26,7 +26,8 @@ export class Fetcher {
     return this;
   }
 
-  withMethod(method: Method) {
+  withMethod(method: Method): Fetcher {
     this.method = method;
+    return this;
   }
 }

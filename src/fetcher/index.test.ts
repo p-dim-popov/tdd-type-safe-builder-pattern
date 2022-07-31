@@ -1,14 +1,7 @@
-import {
-  assertEquals,
-  assertObjectMatch,
-  assertThrows,
-} from "https://deno.land/std@0.150.0/testing/asserts.ts";
-import { Fetcher, Method } from "/src/fetcher/index.ts";
-import { describe, it } from "https://deno.land/std@0.150.0/testing/bdd.ts";
-import {
-  assertSpyCallArgs,
-  spy,
-} from "https://deno.land/std@0.150.0/testing/mock.ts";
+import {assertEquals, assertObjectMatch, assertThrows,} from "https://deno.land/std@0.150.0/testing/asserts.ts";
+import {Fetcher, Method} from "/src/fetcher/index.ts";
+import {describe, it} from "https://deno.land/std@0.150.0/testing/bdd.ts";
+import {assertSpyCallArgs, spy,} from "https://deno.land/std@0.150.0/testing/mock.ts";
 
 type Fetch = typeof fetch;
 
@@ -55,6 +48,13 @@ describe("withMethod", function () {
       assertEquals((builder as any).method, method);
     })
   );
+
+  it("should return builder instance", function () {
+    const builder = new Fetcher(getNoopFetchMock());
+    const builderWithPath = builder.withMethod(Method.PATCH);
+
+    assertEquals(builder, builderWithPath);
+  });
 });
 
 describe("build", function () {
