@@ -1,0 +1,8 @@
+scripts:
+  fetch:
+    cmd: deno run src/index.ts
+    desc: Fetches webpage and saves to index.html
+    allow:
+      - net
+      - read
+      - write
