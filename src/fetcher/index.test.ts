@@ -1,13 +1,23 @@
-import {assertEquals, assertNotEquals} from "testing.asserts";
+import {assertEquals, assertObjectMatch} from "https://deno.land/std@0.150.0/testing/asserts.ts";
 import {Fetcher} from "/src/fetcher/index.ts";
-import test = Deno.test;
+import it = Deno.test;
+import {
+    assertSpyCall, assertSpyCallArg,
+    spy,
+} from "https://deno.land/std@0.150.0/testing/mock.ts";
 
-test("it should exist", () => {
-    assertNotEquals(new Fetcher(), null);
+it('should assign retrieved fetch and path to new object', function () {
+    const fetchSpy = spy((() => {}) as unknown as typeof fetch);
+    const fetcher = new Fetcher(fetchSpy, "/hello");
+    assertObjectMatch(fetcher, { fetch: fetchSpy, path: "/hello" })
 });
 
-test("it should have build method, returning function", () => {
-    const service = new Fetcher().build();
+it("should have build method, returning function calling fetch with initialized path", () => {
+    const fetchSpy = spy((() => {}) as unknown as typeof fetch);
+    const service = new Fetcher(fetchSpy, "/hello").build();
 
-    assertEquals(typeof service, "function")
+    assertEquals(typeof service, "function");
+    service();
+
+    assertSpyCallArg(fetchSpy, 0, 0, "/hello")
 })
