@@ -16,10 +16,12 @@ export class Fetcher {
   constructor(private fetch: Fetch) {}
 
   build() {
-    const { path, method } = this;
+    const { path, method, queryParams } = this;
     if (!path) throw new Error("Path is not specified!");
 
-    return () => this.fetch(path, { method });
+    const destination = queryParams ? `${path}?${queryParams.toString()}` : path;
+
+    return () => this.fetch(destination, { method });
   }
 
   withPath = makeWithSomethingMethod(this, (path: string) => {

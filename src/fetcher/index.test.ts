@@ -75,12 +75,13 @@ describe("build", function () {
     const fetchSpy = getNoopFetchMock();
     const service = new Fetcher(fetchSpy)
       .withPath("/hello")
+      .withQueryParams(["filter", "name^asc"])
       .build();
 
     assertEquals(typeof service, "function");
     service();
 
-    assertSpyCallArgs(fetchSpy, 0, 0, ["/hello", { method: "GET" }]);
+    assertSpyCallArgs(fetchSpy, 0, 0, ["/hello?filter=name%5Easc", { method: "GET" }]);
   });
 
   describe("method should validate builder state before building service function", function () {
