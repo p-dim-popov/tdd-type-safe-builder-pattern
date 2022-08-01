@@ -47,6 +47,15 @@ describe("withMethod", function () {
   itShouldReturnInstance("withMethod", Method.PATCH);
 });
 
+describe('withQueryParams', function () {
+  it('should set URLSearchParams from key value pair array', function () {
+    const builder = new Fetcher(getNoopFetchMock())
+    builder.withQueryParams(["filter", "name^asc"], ["filter", "age^desc"])
+
+    assertEquals((builder as any).queryParams.toString(), "filter=name%5Easc&filter=age%5Edesc")
+  });
+});
+
 describe("build", function () {
   it("should return function calling fetch with correct path and options", () => {
     const fetchSpy = getNoopFetchMock();

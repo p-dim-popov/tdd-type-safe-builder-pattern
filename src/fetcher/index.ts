@@ -11,6 +11,7 @@ export enum Method {
 export class Fetcher {
   private path: string | undefined;
   private method: Method = Method.GET;
+  private queryParams: URLSearchParams | undefined;
 
   constructor(private fetch: Fetch) {}
 
@@ -29,5 +30,10 @@ export class Fetcher {
   withMethod(method: Method): Fetcher {
     this.method = method;
     return this;
+  }
+
+  withQueryParams(...pairs: [string, string][]) {
+    const params = new URLSearchParams(pairs);
+    this.queryParams = params;
   }
 }
