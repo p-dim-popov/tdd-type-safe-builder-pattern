@@ -10,7 +10,7 @@ export enum Method {
 
 export class Fetcher {
   private path: string | undefined;
-  private method: Method = Method.GET;
+  private method: Method | undefined;
   private queryParams: URLSearchParams | undefined;
 
   constructor(private fetch: Fetch) {}
@@ -18,6 +18,7 @@ export class Fetcher {
   build() {
     const { path, method, queryParams } = this;
     if (!path) throw new Error("Path is not specified!");
+    if (!method) throw new Error("Http method is not specified!")
 
     const destination = queryParams ? `${path}?${queryParams.toString()}` : path;
 

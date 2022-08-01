@@ -18,11 +18,7 @@ describe('constructor', function () {
   it("should assign retrieved fetch and default values to new object", function () {
     const fetchSpy = getNoopFetchMock();
     const fetcher = new Fetcher(fetchSpy);
-    assertObjectMatch(fetcher, {
-      fetch: fetchSpy,
-      path: undefined,
-      method: "GET",
-    });
+    assertObjectMatch(fetcher, { fetch: fetchSpy });
   });
 });
 
@@ -75,6 +71,7 @@ describe("build", function () {
     const fetchSpy = getNoopFetchMock();
     const service = new Fetcher(fetchSpy)
       .withPath("/hello")
+      .withMethod(Method.GET)
       .withQueryParams(["filter", "name^asc"])
       .build();
 
@@ -86,9 +83,15 @@ describe("build", function () {
 
   describe("method should validate builder state before building service function", function () {
     it("should throw error when path is not specified", function () {
-      const makeService = () => new Fetcher(getNoopFetchMock()).build();
+      const makeService = () => new Fetcher(getNoopFetchMock()).withMethod(Method.GET).build();
 
       assertThrows(makeService, Error, "Path is not specified!");
+    });
+
+    it('should throw error when method is not specified', function () {
+      const makeService = () => new Fetcher(getNoopFetchMock()).withPath("/").build();
+
+      assertThrows(makeService, Error, "Http method is not specified!");
     });
   });
 });
