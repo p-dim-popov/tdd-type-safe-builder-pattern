@@ -22,19 +22,26 @@ export class Fetcher {
     return () => this.fetch(path, { method });
   }
 
-  withPath(path: string): Fetcher {
+  withPath = makeWithSomethingMethod(this, (path: string) => {
     this.path = path;
-    return this;
-  }
+  });
 
-  withMethod(method: Method): Fetcher {
+  withMethod = makeWithSomethingMethod(this, (method: Method) => {
     this.method = method;
-    return this;
-  }
+  });
 
-  withQueryParams(...pairs: [string, string][]) {
+  withQueryParams = makeWithSomethingMethod(this, (...pairs: [string, string][]) => {
     const params = new URLSearchParams(pairs);
     this.queryParams = params;
-    return this;
-  }
+  });
+}
+
+function makeWithSomethingMethod<
+  TFetcher extends Fetcher,
+  TFunction extends (...args: any[]) => void,
+>(instance: TFetcher, functionBody: TFunction): (...args: Parameters<TFunction>) => Fetcher {
+  return (...args) => {
+    functionBody(...args);
+    return instance;
+  };
 }

@@ -1,7 +1,14 @@
-import {assertEquals, assertObjectMatch, assertThrows,} from "https://deno.land/std@0.150.0/testing/asserts.ts";
-import {Fetcher, Method} from "/src/fetcher/index.ts";
-import {describe, it} from "https://deno.land/std@0.150.0/testing/bdd.ts";
-import {assertSpyCallArgs, spy,} from "https://deno.land/std@0.150.0/testing/mock.ts";
+import {
+  assertEquals,
+  assertObjectMatch,
+  assertThrows,
+} from "https://deno.land/std@0.150.0/testing/asserts.ts";
+import { Fetcher, Method } from "/src/fetcher/index.ts";
+import { describe, it } from "https://deno.land/std@0.150.0/testing/bdd.ts";
+import {
+  assertSpyCallArgs,
+  spy,
+} from "https://deno.land/std@0.150.0/testing/mock.ts";
 
 type Fetch = typeof fetch;
 
@@ -25,7 +32,7 @@ describe("withPath", function () {
     assertEquals((builder as any).path, "/world");
   });
 
-  itShouldReturnInstance("withPath", '/hello-world');
+  itShouldReturnInstance("withPath", "/hello-world");
 });
 
 describe("withMethod", function () {
@@ -47,12 +54,15 @@ describe("withMethod", function () {
   itShouldReturnInstance("withMethod", Method.PATCH);
 });
 
-describe('withQueryParams', function () {
-  it('should set URLSearchParams from key value pair array', function () {
-    const builder = new Fetcher(getNoopFetchMock())
-    builder.withQueryParams(["filter", "name^asc"], ["filter", "age^desc"])
+describe("withQueryParams", function () {
+  it("should set URLSearchParams from key value pair array", function () {
+    const builder = new Fetcher(getNoopFetchMock());
+    builder.withQueryParams(["filter", "name^asc"], ["filter", "age^desc"]);
 
-    assertEquals((builder as any).queryParams.toString(), "filter=name%5Easc&filter=age%5Edesc")
+    assertEquals(
+      (builder as any).queryParams.toString(),
+      "filter=name%5Easc&filter=age%5Edesc",
+    );
   });
 
   itShouldReturnInstance("withQueryParams", ["name", "Peter"]);
@@ -80,7 +90,10 @@ describe("build", function () {
   });
 });
 
-function itShouldReturnInstance<T extends keyof Fetcher & `with${string}`>(method: T, ...args: Parameters<Fetcher[T]>) {
+function itShouldReturnInstance<T extends keyof Fetcher & `with${string}`>(
+  method: T,
+  ...args: Parameters<Fetcher[T]>
+) {
   it(`${method} should return builder instance`, function () {
     const builder = new Fetcher(getNoopFetchMock());
     const result = (builder[method] as any)(...args);
