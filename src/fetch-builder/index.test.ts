@@ -3,7 +3,7 @@ import {
   assertObjectMatch,
   assertThrows,
 } from "https://deno.land/std@0.150.0/testing/asserts.ts";
-import { Fetcher, Method } from "/src/fetcher/index.ts";
+import { FetchBuilder, Method } from "/src/fetch-builder/index.ts";
 import { describe, it } from "https://deno.land/std@0.150.0/testing/bdd.ts";
 import {
   assertSpyCallArgs,
@@ -17,14 +17,14 @@ const getNoopFetchMock = () => spy((() => {}) as unknown as Fetch);
 describe('constructor', function () {
   it("should assign retrieved fetch and default values to new object", function () {
     const fetchSpy = getNoopFetchMock();
-    const fetcher = new Fetcher(fetchSpy);
+    const fetcher = new FetchBuilder(fetchSpy);
     assertObjectMatch(fetcher, { fetch: fetchSpy });
   });
 });
 
 describe("withPath", function () {
   it("should modify path", function () {
-    const builder = new Fetcher(getNoopFetchMock());
+    const builder = new FetchBuilder(getNoopFetchMock());
     builder.withPath("/world");
 
     assertEquals((builder as any).path, "/world");
@@ -42,7 +42,7 @@ describe("withMethod", function () {
     Method.DELETE,
   ].forEach((method) =>
     it(`should set method: ${method}`, function () {
-      const builder = new Fetcher(getNoopFetchMock());
+      const builder = new FetchBuilder(getNoopFetchMock());
       builder.withMethod(method);
 
       assertEquals((builder as any).method, method);
@@ -54,7 +54,7 @@ describe("withMethod", function () {
 
 describe("withQueryParams", function () {
   it("should set URLSearchParams from key value pair array", function () {
-    const builder = new Fetcher(getNoopFetchMock());
+    const builder = new FetchBuilder(getNoopFetchMock());
     builder.withQueryParams(["filter", "name^asc"], ["filter", "age^desc"]);
 
     assertEquals(
@@ -69,7 +69,7 @@ describe("withQueryParams", function () {
 describe("build", function () {
   it("should return function calling fetch with correct path and options", () => {
     const fetchSpy = getNoopFetchMock();
-    const service = new Fetcher(fetchSpy)
+    const service = new FetchBuilder(fetchSpy)
       .withPath("/hello")
       .withMethod(Method.GET)
       .withQueryParams(["filter", "name^asc"])
@@ -83,25 +83,25 @@ describe("build", function () {
 
   describe("method should validate builder state before building service function", function () {
     it("should throw error when path is not specified", function () {
-      const makeService = () => new Fetcher(getNoopFetchMock()).withMethod(Method.GET).build();
+      const makeService = () => new FetchBuilder(getNoopFetchMock()).withMethod(Method.GET).build();
 
       assertThrows(makeService, Error, "Path is not specified!");
     });
 
     it('should throw error when method is not specified', function () {
-      const makeService = () => new Fetcher(getNoopFetchMock()).withPath("/").build();
+      const makeService = () => new FetchBuilder(getNoopFetchMock()).withPath("/").build();
 
       assertThrows(makeService, Error, "Http method is not specified!");
     });
   });
 });
 
-function itShouldReturnInstance<T extends keyof Fetcher & `with${string}`>(
+function itShouldReturnInstance<T extends keyof FetchBuilder & `with${string}`>(
   method: T,
-  ...args: Parameters<Fetcher[T]>
+  ...args: Parameters<FetchBuilder[T]>
 ) {
   it(`${method} should return builder instance`, function () {
-    const builder = new Fetcher(getNoopFetchMock());
+    const builder = new FetchBuilder(getNoopFetchMock());
     const result = (builder[method] as any)(...args);
 
     assertEquals(builder, result);

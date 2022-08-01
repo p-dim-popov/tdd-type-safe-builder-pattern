@@ -8,7 +8,7 @@ export enum Method {
   DELETE = "DELETE",
 }
 
-export class Fetcher {
+export class FetchBuilder {
   private path: string | undefined;
   private method: Method | undefined;
   private queryParams: URLSearchParams | undefined;
@@ -40,9 +40,9 @@ export class Fetcher {
 }
 
 function makeWithSomethingMethod<
-  TFetcher extends Fetcher,
+  TFetcher extends FetchBuilder,
   TFunction extends (...args: any[]) => void,
->(instance: TFetcher, functionBody: TFunction): (...args: Parameters<TFunction>) => Fetcher {
+>(instance: TFetcher, functionBody: TFunction): (...args: Parameters<TFunction>) => FetchBuilder {
   return (...args) => {
     functionBody(...args);
     return instance;
