@@ -25,12 +25,7 @@ describe("withPath", function () {
     assertEquals((builder as any).path, "/world");
   });
 
-  it("should return builder instance", function () {
-    const builder = new Fetcher(getNoopFetchMock());
-    const builderWithPath = builder.withPath("/world");
-
-    assertEquals(builder, builderWithPath);
-  });
+  itShouldReturnInstance("withPath", '/hello-world');
 });
 
 describe("withMethod", function () {
@@ -49,12 +44,7 @@ describe("withMethod", function () {
     })
   );
 
-  it("should return builder instance", function () {
-    const builder = new Fetcher(getNoopFetchMock());
-    const builderWithPath = builder.withMethod(Method.PATCH);
-
-    assertEquals(builder, builderWithPath);
-  });
+  itShouldReturnInstance("withMethod", Method.PATCH);
 });
 
 describe("build", function () {
@@ -78,3 +68,12 @@ describe("build", function () {
     });
   });
 });
+
+function itShouldReturnInstance<T extends keyof Fetcher & `with${string}`>(method: T, ...args: Parameters<Fetcher[T]>) {
+  it(`${method} should return builder instance`, function () {
+    const builder = new Fetcher(getNoopFetchMock());
+    const result = (builder[method] as any)(...args);
+
+    assertEquals(builder, result);
+  });
+}
