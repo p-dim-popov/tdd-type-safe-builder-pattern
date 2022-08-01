@@ -54,6 +54,8 @@ describe('withQueryParams', function () {
 
     assertEquals((builder as any).queryParams.toString(), "filter=name%5Easc&filter=age%5Edesc")
   });
+
+  itShouldReturnInstance("withQueryParams", ["name", "Peter"]);
 });
 
 describe("build", function () {

@@ -35,5 +35,6 @@ export class Fetcher {
   withQueryParams(...pairs: [string, string][]) {
     const params = new URLSearchParams(pairs);
     this.queryParams = params;
+    return this;
   }
 }
