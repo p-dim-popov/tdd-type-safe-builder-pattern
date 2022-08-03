@@ -1,6 +1,6 @@
 type Fetch = typeof fetch;
 
-export enum Method {
+export enum HttpMethod {
   GET = "GET",
   POST = "POST",
   PATCH = "PATCH",
@@ -8,9 +8,9 @@ export enum Method {
   DELETE = "DELETE",
 }
 
-export class FetchBuilder {
+export class BasicFetchBuilder {
   private path: string | undefined;
-  private method: Method | undefined;
+  private method: HttpMethod | undefined;
   private queryParams: URLSearchParams | undefined;
 
   constructor(private fetch: Fetch) {}
@@ -25,24 +25,24 @@ export class FetchBuilder {
     return () => this.fetch(destination, { method });
   }
 
-  withPath = makeWithSomethingMethod(this, (path: string) => {
+  withPath = makeMethod(this, (path: string) => {
     this.path = path;
   });
 
-  withMethod = makeWithSomethingMethod(this, (method: Method) => {
+  withMethod = makeMethod(this, (method: HttpMethod) => {
     this.method = method;
   });
 
-  withQueryParams = makeWithSomethingMethod(this, (...pairs: [string, string][]) => {
+  withQueryParams = makeMethod(this, (...pairs: [string, string][]) => {
     const params = new URLSearchParams(pairs);
     this.queryParams = params;
   });
 }
 
-function makeWithSomethingMethod<
-  TFetcher extends FetchBuilder,
+function makeMethod<
+  TFetcher extends BasicFetchBuilder,
   TFunction extends (...args: any[]) => void,
->(instance: TFetcher, functionBody: TFunction): (...args: Parameters<TFunction>) => FetchBuilder {
+>(instance: TFetcher, functionBody: TFunction): (...args: Parameters<TFunction>) => BasicFetchBuilder {
   return (...args) => {
     functionBody(...args);
     return instance;
