@@ -3,16 +3,13 @@ import {
   assertObjectMatch,
   assertThrows,
 } from "https://deno.land/std@0.150.0/testing/asserts.ts";
-import { BasicFetchBuilder, HttpMethod } from "/src/basic-fetch-builder/index.ts";
+import { BasicFetchBuilder } from "/src/basic-fetch-builder/index.ts";
 import { describe, it } from "https://deno.land/std@0.150.0/testing/bdd.ts";
 import {
   assertSpyCallArgs,
-  spy,
 } from "https://deno.land/std@0.150.0/testing/mock.ts";
-
-type Fetch = typeof fetch;
-
-const getNoopFetchMock = () => spy((() => {}) as unknown as Fetch);
+import { getNoopFetchMock } from "/__test__/utils.ts"
+import { HttpMethod } from "/src/common.ts";
 
 describe('constructor', function () {
   it("should assign retrieved fetch and default values to new object", function () {

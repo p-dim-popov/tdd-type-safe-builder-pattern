@@ -1,12 +1,5 @@
-type Fetch = typeof fetch;
-
-export enum HttpMethod {
-  GET = "GET",
-  POST = "POST",
-  PATCH = "PATCH",
-  PUT = "PUT",
-  DELETE = "DELETE",
-}
+import { HttpMethod } from "/src/common.ts";
+import { Fetch } from "/src/interfaces.ts";
 
 export class BasicFetchBuilder {
   private path: string | undefined;
