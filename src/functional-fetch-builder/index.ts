@@ -10,7 +10,6 @@ type Options = {
 
 export const createFetchBuilder = ({ fetch }: Dependencies, { withPath }: Options) => {
     return {
-        path: withPath,
-        build: () => () => fetch("")
+        build: () => () => fetch(withPath)
     }
 }
