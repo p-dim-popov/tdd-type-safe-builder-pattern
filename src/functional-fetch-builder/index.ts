@@ -1,15 +1,20 @@
 import { Fetch } from "/src/interfaces.ts";
 
 type Dependencies = {
-    fetch: Fetch;
-}
+  fetch: Fetch;
+};
 
 type Options = {
-    withPath: string;
-}
+  withPath: string;
+  withQuery?: ConstructorParameters<typeof URLSearchParams>;
+};
 
-export const createFetchBuilder = ({ fetch }: Dependencies, { withPath }: Options) => {
-    return {
-        build: () => () => fetch(withPath)
-    }
-}
+export const createFetchBuilder = (
+  { fetch }: Dependencies,
+  { withPath, withQuery }: Options,
+) => {
+  return {
+    build: () => () =>
+      fetch(`${withPath}${withQuery ? `?${new URLSearchParams(...withQuery)}` : ""}`),
+  };
+};

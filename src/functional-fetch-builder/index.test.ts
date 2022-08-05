@@ -34,3 +34,16 @@ describe("withPath", () => {
     assertSpyCallArgs(fetchMock, 0, ["/example/image.png"]);
   });
 });
+
+describe("withQuery", () => {
+  it("should prepare correct query", () => {
+    const fetchMock = getNoopFetchMock();
+    createFetchBuilder({ fetch: fetchMock }, {
+      withPath: "/users",
+      withQuery: [[["sort", "name^asc"], ["sort", "age^desc"]]],
+    })
+      .build()();
+
+    assertSpyCallArgs(fetchMock, 0, [encodeURI("/users?sort=name^asc&sort=age^desc")]);
+  });
+});
