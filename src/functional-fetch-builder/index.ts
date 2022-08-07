@@ -1,3 +1,4 @@
+import { HttpMethod } from "../common.ts";
 import { Fetch } from "/src/interfaces.ts";
 
 type Dependencies = {
@@ -6,6 +7,7 @@ type Dependencies = {
 
 type Options = {
   withPath: string;
+  withHttpMethod: HttpMethod;
   withQuery?: NonNullable<ConstructorParameters<typeof URLSearchParams>[0]>;
 };
 
@@ -14,7 +16,7 @@ const FAKE_DOMAIN = "domain";
 
 export const createFetchBuilder = (
   { fetch }: Dependencies,
-  { withPath, withQuery }: Options,
+  { withPath, withQuery, withHttpMethod }: Options,
 ) => {
     const url = (() => {
         try {
@@ -36,7 +38,7 @@ export const createFetchBuilder = (
 
   return {
     build: () => () =>
-      fetch(`${protocol ? `${protocol}//${url.hostname}` : ""}${url.pathname}${query}`),
+      fetch(`${protocol ? `${protocol}//${url.hostname}` : ""}${url.pathname}${query}`, { method: withHttpMethod }),
   };
 };
 
