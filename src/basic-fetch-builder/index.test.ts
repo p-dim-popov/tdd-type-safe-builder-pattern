@@ -8,10 +8,10 @@ import { describe, it } from "https://deno.land/std@0.150.0/testing/bdd.ts";
 import {
   assertSpyCallArgs,
 } from "https://deno.land/std@0.150.0/testing/mock.ts";
-import { getNoopFetchMock } from "/__test__/utils.ts"
+import { getNoopFetchMock } from "/__test__/utils.ts";
 import { HttpMethod } from "/src/common.ts";
 
-describe('constructor', function () {
+describe("constructor", function () {
   it("should assign retrieved fetch and default values to new object", function () {
     const fetchSpy = getNoopFetchMock();
     const fetcher = new BasicFetchBuilder(fetchSpy);
@@ -75,25 +75,32 @@ describe("build", function () {
     assertEquals(typeof service, "function");
     service();
 
-    assertSpyCallArgs(fetchSpy, 0, 0, ["/hello?filter=name%5Easc", { method: "GET" }]);
+    assertSpyCallArgs(fetchSpy, 0, 0, ["/hello?filter=name%5Easc", {
+      method: "GET",
+    }]);
   });
 
   describe("method should validate builder state before building service function", function () {
     it("should throw error when path is not specified", function () {
-      const makeService = () => new BasicFetchBuilder(getNoopFetchMock()).withMethod(HttpMethod.GET).build();
+      const makeService = () =>
+        new BasicFetchBuilder(getNoopFetchMock()).withMethod(HttpMethod.GET)
+          .build();
 
       assertThrows(makeService, Error, "Path is not specified!");
     });
 
-    it('should throw error when method is not specified', function () {
-      const makeService = () => new BasicFetchBuilder(getNoopFetchMock()).withPath("/").build();
+    it("should throw error when method is not specified", function () {
+      const makeService = () =>
+        new BasicFetchBuilder(getNoopFetchMock()).withPath("/").build();
 
       assertThrows(makeService, Error, "Http method is not specified!");
     });
   });
 });
 
-function itShouldReturnInstance<T extends keyof BasicFetchBuilder & `with${string}`>(
+function itShouldReturnInstance<
+  T extends keyof BasicFetchBuilder & `with${string}`,
+>(
   method: T,
   ...args: Parameters<BasicFetchBuilder[T]>
 ) {

@@ -21,7 +21,10 @@ it("should return build function", () => {
 describe("build", () => {
   it("should call fetch", () => {
     const fetchMock = getNoopFetchMock();
-    createFetchBuilder({ fetch: fetchMock }, { withPath: "", withHttpMethod: HttpMethod.GET }).build()();
+    createFetchBuilder({ fetch: fetchMock }, {
+      withPath: "",
+      withHttpMethod: HttpMethod.GET,
+    }).build()();
 
     assertSpyCall(fetchMock, 0);
   });
@@ -30,7 +33,10 @@ describe("build", () => {
 describe("withPath", () => {
   it("should set path as fetch call arg", () => {
     const fetchMock = getNoopFetchMock();
-    createFetchBuilder({ fetch: fetchMock }, { withPath: "/example/image.png", withHttpMethod: HttpMethod.GET })
+    createFetchBuilder({ fetch: fetchMock }, {
+      withPath: "/example/image.png",
+      withHttpMethod: HttpMethod.GET,
+    })
       .build()();
 
     assertSpyCallArgs(fetchMock, 0, 0, 1, ["/example/image.png"]);
@@ -38,15 +44,23 @@ describe("withPath", () => {
 
   it("should work with FQ path", () => {
     const fetchMock = getNoopFetchMock();
-    createFetchBuilder({ fetch: fetchMock }, { withPath: "https://example.com/example/image.png", withHttpMethod: HttpMethod.GET })
+    createFetchBuilder({ fetch: fetchMock }, {
+      withPath: "https://example.com/example/image.png",
+      withHttpMethod: HttpMethod.GET,
+    })
       .build()();
 
-    assertSpyCallArgs(fetchMock, 0, 0, 1, ["https://example.com/example/image.png"]);
+    assertSpyCallArgs(fetchMock, 0, 0, 1, [
+      "https://example.com/example/image.png",
+    ]);
   });
 
   it("should work with non FQ path", () => {
     const fetchMock = getNoopFetchMock();
-    createFetchBuilder({ fetch: fetchMock }, { withPath: "/users", withHttpMethod: HttpMethod.GET })
+    createFetchBuilder({ fetch: fetchMock }, {
+      withPath: "/users",
+      withHttpMethod: HttpMethod.GET,
+    })
       .build()();
 
     assertSpyCallArgs(fetchMock, 0, 0, 1, ["/users"]);
@@ -63,7 +77,9 @@ describe("withQuery", () => {
     })
       .build()();
 
-    assertSpyCallArgs(fetchMock, 0, 0, 1, [encodeURI("/users?sort=name^asc&sort=age^desc")]);
+    assertSpyCallArgs(fetchMock, 0, 0, 1, [
+      encodeURI("/users?sort=name^asc&sort=age^desc"),
+    ]);
   });
 
   it("should preserve query params from path", () => {
@@ -75,8 +91,10 @@ describe("withQuery", () => {
     })
       .build()();
 
-    assertSpyCallArgs(fetchMock, 0, 0, 1, [encodeURI("/users?filter=age>50&sort=name^asc&sort=age^desc")]);
-  })
+    assertSpyCallArgs(fetchMock, 0, 0, 1, [
+      encodeURI("/users?filter=age>50&sort=name^asc&sort=age^desc"),
+    ]);
+  });
 });
 
 describe("withHttpMethod", () => {
@@ -90,4 +108,4 @@ describe("withHttpMethod", () => {
 
     assertSpyCallArgs(fetchMock, 0, ["/", { method: HttpMethod.DELETE }]);
   });
-})
+});

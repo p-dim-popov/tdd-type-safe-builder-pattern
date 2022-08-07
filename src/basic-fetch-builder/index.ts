@@ -11,9 +11,11 @@ export class BasicFetchBuilder {
   build() {
     const { path, method, queryParams } = this;
     if (!path) throw new Error("Path is not specified!");
-    if (!method) throw new Error("Http method is not specified!")
+    if (!method) throw new Error("Http method is not specified!");
 
-    const destination = queryParams ? `${path}?${queryParams.toString()}` : path;
+    const destination = queryParams
+      ? `${path}?${queryParams.toString()}`
+      : path;
 
     return () => this.fetch(destination, { method });
   }
@@ -35,7 +37,10 @@ export class BasicFetchBuilder {
 function makeMethod<
   TFetcher extends BasicFetchBuilder,
   TFunction extends (...args: any[]) => void,
->(instance: TFetcher, functionBody: TFunction): (...args: Parameters<TFunction>) => BasicFetchBuilder {
+>(
+  instance: TFetcher,
+  functionBody: TFunction,
+): (...args: Parameters<TFunction>) => BasicFetchBuilder {
   return (...args) => {
     functionBody(...args);
     return instance;
