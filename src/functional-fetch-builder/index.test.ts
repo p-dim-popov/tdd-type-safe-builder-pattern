@@ -33,6 +33,22 @@ describe("withPath", () => {
 
     assertSpyCallArgs(fetchMock, 0, ["/example/image.png"]);
   });
+
+  it("should work with FQ path", () => {
+    const fetchMock = getNoopFetchMock();
+    createFetchBuilder({ fetch: fetchMock }, { withPath: "https://example.com/example/image.png" })
+      .build()();
+
+    assertSpyCallArgs(fetchMock, 0, ["https://example.com/example/image.png"]);
+  });
+
+  it("should work with non FQ path", () => {
+    const fetchMock = getNoopFetchMock();
+    createFetchBuilder({ fetch: fetchMock }, { withPath: "/users" })
+      .build()();
+
+    assertSpyCallArgs(fetchMock, 0, ["/users"]);
+  });
 });
 
 describe("withQuery", () => {
@@ -40,10 +56,21 @@ describe("withQuery", () => {
     const fetchMock = getNoopFetchMock();
     createFetchBuilder({ fetch: fetchMock }, {
       withPath: "/users",
-      withQuery: [[["sort", "name^asc"], ["sort", "age^desc"]]],
+      withQuery: [["sort", "name^asc"], ["sort", "age^desc"]],
     })
       .build()();
 
     assertSpyCallArgs(fetchMock, 0, [encodeURI("/users?sort=name^asc&sort=age^desc")]);
   });
+
+  it("should preserve query params from path", () => {
+    const fetchMock = getNoopFetchMock();
+    createFetchBuilder({ fetch: fetchMock }, {
+      withPath: "/users?filter=age>50",
+      withQuery: [["sort", "name^asc"], ["sort", "age^desc"]],
+    })
+      .build()();
+
+    assertSpyCallArgs(fetchMock, 0, [encodeURI("/users?filter=age>50&sort=name^asc&sort=age^desc")]);
+  })
 });
